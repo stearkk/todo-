@@ -1,0 +1,71 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+
+using namespace std;
+
+typedef long long lli;
+
+struct edge {
+	int y;
+	lli w;
+};
+
+int n, m  ;
+vector<int> color;
+vector<vector<edge>> e;
+vector<int> d;
+
+const long long INF = 1000000000 + 7;
+
+void dick_stra(int s, int n) {
+	color.resize(n, 0);
+	d.resize(n, INF);
+	d[s] = 0;
+	
+	for (int i = 0; i < n; i++) {
+		int a = -1;
+		for (int j = 0; j < n; j++) {
+			if (!color[j] && (a == -1 || d[a] > d[j])) {
+				a = j;
+			}
+		}
+
+		if (a == INF || a == -1) break;
+
+		color[a] = 1;
+		for (auto& i : e[a]) {
+			if (d[i.y] > d[a] + i.w)
+				d[i.y] = d[a] + i.w;
+		}
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> n >> m;
+	e = vector<vector<edge>>(n + 1);
+
+	for (int i = 0; i < m; i++) {
+		lli a, b, w;
+		edge t1, t2;
+		cin >> a >> b >> w;
+		
+		t1.y = a, t1.w = w;
+		t2.y = b, t2.w = w;
+
+		e[b].push_back(t1);
+		e[a].push_back(t2);
+	}
+
+	int s = 0;
+	cin >> s;
+
+	dick_stra(s, n);
+
+	for (auto i : d) cout << i << ' ';
+	
+}
