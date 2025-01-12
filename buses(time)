@@ -1,0 +1,78 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<numeric>
+#include<set>
+
+using namespace std;
+
+typedef long long lli;
+
+struct edge {
+	int y;
+	int t;
+	int w;
+};
+
+int n, m;
+vector<vector<edge>> e;
+vector<int> path;
+vector<int> d;
+
+const long long INF = 1000000000 + 7;
+
+void dick_stra(int s, int f) {
+	d.resize(n, INF);
+	path.resize(0);
+
+	d[s] = 0;
+	set<pair<lli, int>> l;
+	l.insert({ d[s], s });
+
+	while (!l.empty()) {
+		int a = l.begin()->second;
+		l.erase(l.begin());
+
+		for (auto& i : e[a]) {
+			if (d[a] <= i.t && d[i.y] > i.w) {
+				l.erase({ d[i.y], i.y });
+				d[i.y] = i.w;
+
+				l.insert({ d[i.y], i.y });
+			}
+
+		}
+
+	}
+
+}
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+
+	int s = 0, f;
+	cin >> n;
+	cin >> s >> f;
+	cin >> m;
+	s--, f--;
+	e = vector<vector<edge>>(n + 1);
+	for (int i = 0; i < m; i++) {
+		lli a, b, t, w;
+		edge t1, t2;
+		cin >> a >> t >> b >> w;
+		b--, a--;
+		t1.y = a, t1.w = w, t1.t = t;
+		t2.y = b, t2.w = w, t2.t = t;
+
+		e[a].push_back(t2);
+	}
+
+
+	dick_stra(s, f);
+
+	if (d[f] != INF) cout << d[f];
+	else cout << -1;
+
+}
